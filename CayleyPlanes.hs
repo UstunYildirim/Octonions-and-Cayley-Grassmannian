@@ -70,10 +70,10 @@ triCrProdOnList [u,v,w] = triCrProd u v w
 triCrProdOnList _ = error "triCrProd requires exactly 3 vectors"
 
 capPhi :: Octonion -> Octonion -> Octonion -> Octonion -> ComplexNumber
-capPhi x y z w = dotProd x (triCrProd y z w)
+capPhi x u v w = dotProd x (triCrProd u v w)
 
 capPhiOnList :: [Octonion] -> ComplexNumber
-capPhiOnList [x,y,z,w] = capPhi x y z w
+capPhiOnList [x,u,v,w] = capPhi x u v w
 capPhiOnList _ = error "capPhi is a 4 form! It requires 4 vectors to be evaluated."
 
 capPhiComps = formComps8 4 capPhiOnList
@@ -95,10 +95,16 @@ latexPrintCapPhi = latexPrintCvalForms $ formComps8' 4 capPhiOnList
 
 preQuadCrProdOnList = alternate f
   where
-    --f [u,v,w,x] = ((conj u * v) * conj w) * x
-    --f [u,v,w,x] = conj u * (v * (conj w * x))
-    --f [u,v,w,x] = u * (conj v * (w * conj x))
-    f [u,v,w,x] = negate $ ((u * conj v) * w) * conj x
+    f [x,u,v,w] = negate $ ((x * conj u) * v) * conj w
+    --f [x,u,v,w] = conj x*triCrProdOnList [u,v,w]
+
+quadCrPr x u v w = scalarMult (-0.25) (
+  (triCrProd x u v) * conj w
+  -(triCrProd w x u) * conj v
+  +(triCrProd v w x) * conj u
+  -(triCrProd u v w) * conj x)
+
+quadCrPrOnList [x,u,v,w] = quadCrPr x u v w
 
 isAllOnes = map (\q -> ((capPhiOnList q)**2) + normSquared (imaginary $ preQuadCrProdOnList q)) gen4VsIn8d
 
