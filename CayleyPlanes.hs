@@ -3,61 +3,62 @@ module CayleyPlanes where
 import ComplexOctonions
 import ComplexNumbers (ComplexNumber, i)
 import Data.List
-
-uniqStrIncNtuple :: Int -> [a] -> [[a]]
-uniqStrIncNtuple 0 _      = [[]]
-uniqStrIncNtuple _ []     = []
-uniqStrIncNtuple n (x:xs) = (map (x:) $ uniqStrIncNtuple (n-1) xs) ++ uniqStrIncNtuple n xs
+import DifferentialFormCalculus
 
 gen3VsIn7d :: [[Octonion]]
 gen3VsIn8d :: [[Octonion]]
 gen4VsIn7d :: [[Octonion]]
 gen4VsIn8d :: [[Octonion]]
-gen3VsIn7d = uniqStrIncNtuple 3 imagOctGens
-gen3VsIn8d = uniqStrIncNtuple 3 octGens
-gen4VsIn7d = uniqStrIncNtuple 4 imagOctGens
-gen4VsIn8d = uniqStrIncNtuple 4 octGens
+gen3VsIn7d = ngenFromBasis 3 imagOctGens
+gen3VsIn8d = ngenFromBasis 3 octGens
+gen4VsIn7d = ngenFromBasis 4 imagOctGens
+gen4VsIn8d = ngenFromBasis 4 octGens
 
-nNames37 = uniqStrIncNtuple 3 "1234567"
-nNames38 = uniqStrIncNtuple 3 "01234567"
-nNames47 = uniqStrIncNtuple 4 "1234567"
-nNames48 = uniqStrIncNtuple 4 "01234567"
+vName :: Octonion -> Char
+vName = unjust . flip lookup (zip octGens "01234567")
+  where
+    unjust (Just v) = v
+    unjust Nothing  = error "non generator vector being named!"
 
-nvecNames37 = map (("e_{" ++) . (++ "}")) nNames37
-nvecNames38 = map (("e_{" ++) . (++ "}")) nNames38
-nvecNames47 = map (("e_{" ++) . (++ "}")) nNames47
-nvecNames48 = map (("e_{" ++) . (++ "}")) nNames48
+vNames :: [Octonion] -> String
+vNames = map vName
 
-nCovNames37 = map (("e^{" ++) . (++ "}")) nNames37
-nCovNames38 = map (("e^{" ++) . (++ "}")) nNames38
-nCovNames47 = map (("e^{" ++) . (++ "}")) nNames47
-nCovNames48 = map (("e^{" ++) . (++ "}")) nNames48
+nvecNames :: [Octonion] -> String
+ncovNames :: [Octonion] -> String
+nvecNames os = "e_{" ++ vNames os ++ "}"
+ncovNames os = "e^{" ++ vNames os ++ "}"
 
-formComps37 f = filter ((/=0) . snd ) . zip nCovNames37 $ map f gen3VsIn7d
-formComps38 f = filter ((/=0) . snd ) . zip nCovNames38 $ map f gen3VsIn8d
-formComps47 f = filter ((/=0) . snd ) . zip nCovNames47 $ map f gen4VsIn7d
-formComps48 f = filter ((/=0) . snd ) . zip nCovNames48 $ map f gen4VsIn8d
+removeVecCov = init . drop 3
+
+formComps7 n f = map (\(a,b) -> (vNames a, b)) $ formComps n imagOctGens f
+formComps8 n f = map (\(a,b) -> (vNames a, b)) $ formComps n octGens f
+formComps7' n f = map (\(a,b) -> (ncovNames a, b)) $ formComps n imagOctGens f
+formComps8' n f = map (\(a,b) -> (ncovNames a, b)) $ formComps n octGens f
 
 crProd :: Octonion -> Octonion -> Octonion
-crProd x y = imaginary (x * (conj y))
+crProd u v = imaginary ((conj v) * u)
+
+crProdOnList :: [Octonion] -> Octonion
+crProdOnList [u,v] = crProd u v
 
 phi :: Octonion -> Octonion -> Octonion -> ComplexNumber
-phi x y z = dotProd x (crProd y z)
+phi u v w = dotProd (crProd u v) w
 
 phiOnList :: [Octonion] -> ComplexNumber
-phiOnList [x,y,z] = phi x y z
+phiOnList [u,v,w] = phi u v w
 phiOnList _ = error "phi requires exactly 3 vectors"
+
+phiComps = formComps7 3 phiOnList
+
+contractPhi x = formComps7 2 (intPr x phiOnList)
+
+metricAndVol x = wdgPrOnComps (contractPhi x) $ wdgPrOnComps (contractPhi x) phiComps
 
 -- we want to express triCrProd as alternation
 -- of u(\bar v w).
 
-preTrCrPr u v w = scalarMult (1/6) $ f u v w - f u w v
-                                    + f w u v - f w v u
-                                    + f v w u - f v u w
-  where
-    f u v w = u * ((conj v) * w)
-
-preTrCrPrOnList [u,v,w] = preTrCrPr u v w
+preTrCrPrOnList = alternate f where
+  f [u, v, w] = u * ((conj v) * w)
 
 -- this definition of triple cross product agrees with the one below.
 
@@ -75,10 +76,21 @@ capPhiOnList :: [Octonion] -> ComplexNumber
 capPhiOnList [x,y,z,w] = capPhi x y z w
 capPhiOnList _ = error "capPhi is a 4 form! It requires 4 vectors to be evaluated."
 
-latexPrintCapPhi = concatMap putPM $ formComps48 capPhiOnList
+latexPrintCvalForms :: [(String, ComplexNumber)] -> String
+latexPrintCvalForms = concatMap putCoefficient
   where
-    putPM (s,1) = '+':s
-    putPM (s,-1) = '-':s
+    putCoefficient (s,1) = '+':s
+    putCoefficient (s,-1) = '-':s
+    putCoefficient (s,x) = (show x)++s
+
+-- this function is not convenient yet.
+latexPrintVvalForms :: [(String, Octonion)] -> String
+latexPrintVvalForms = concatMap putCoefficient
+  where
+    putCoefficient (s,x) = " + " ++ (show x) ++ s
+
+latexPrintCapPhi = latexPrintCvalForms $ formComps8 4 capPhiOnList
+
 
 -- 
 -- commutator :: Octonion -> Octonion -> Octonion

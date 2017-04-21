@@ -72,10 +72,14 @@ instance Fractional ComplexNumber where
     b' = -b/n 
 
 instance Show ComplexNumber where
-  show (ComplexNumber (0,0)) = "0"
-  show (ComplexNumber (a,0)) = show a
-  show (ComplexNumber (0,b)) = show b ++ "i"
-  show (ComplexNumber (a,b)) = show a ++ " + " ++ show b ++ "i" 
+  show cn = case cn of
+    (ComplexNumber (0,0)) -> "0"
+    (ComplexNumber (a,0)) -> show' a
+    (ComplexNumber (0,b)) -> show' b ++ "i"
+    (ComplexNumber (a,b)) -> show' a ++ " + " ++ show' b ++ "i"
+    where
+      show' x = if isIntegral x then show (floor x) else show x
+      isIntegral x = (fromIntegral (floor x) == x)
 
 instance Ord ComplexNumber where
   q < q' = (complexNumberAsList q) < (complexNumberAsList q')

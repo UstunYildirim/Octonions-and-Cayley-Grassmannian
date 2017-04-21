@@ -10,22 +10,22 @@ oi  :: Octonion
 oj  :: Octonion 
 ok  :: Octonion 
 ol  :: Octonion 
-oil :: Octonion 
-ojl :: Octonion 
-okl :: Octonion 
+oli :: Octonion 
+olj :: Octonion 
+olk :: Octonion 
 ii  = scalarMult i 1
 oi  = Octonion(qi,0)
 oj  = Octonion(qj,0)
 ok  = Octonion(qk,0)
 ol  = Octonion(0,1)
-oil = oi * ol
-ojl = oj * ol
-okl = ok * ol
+oli = ol * oi
+olj = ol * oj
+olk = ol * ok
 
 octGens     :: [Octonion] 
 ioctGens    :: [Octonion] 
 imagOctGens :: [Octonion] 
-octGens     = [1,oi,oj,ok,ol,oil,ojl,okl]
+octGens     = [1,oi,oj,ok,ol,oli,olj,olk]
 ioctGens    = map (scalarMult i) octGens
 imagOctGens = tail octGens
 
@@ -94,7 +94,15 @@ instance Fractional Octonion where
 
 instance Show Octonion where
   show 0 = "0"
-  show q = List.intercalate " + " $ map (\(x,y)->x++y) $ filter (\(x,_)->x/="[]") $ zip (map (\x->'[':(show x)++"]") (octonionAsList q)) ["","l"] 
+  show q = List.intercalate " + " .
+    map (\(x,y)->y++x) .
+      filter (\(x,_)->x/="[]") $
+        zip ([a', b'])  ["","l"] 
+         where
+          [a,b] = octonionAsList q
+          a' = putBrackets $ show a
+          b' = putBrackets $ show (CQ.conj b)
+          putBrackets = ('[':) . (++"]")
 
 instance Ord Octonion where
   q < q' = (octonionAsList q) < (octonionAsList q')
