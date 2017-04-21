@@ -58,15 +58,15 @@ metricAndVol x = wdgPrOnComps (contractPhi x) $ wdgPrOnComps (contractPhi x) phi
 -- of u(\bar v w).
 
 preTrCrPrOnList = alternate f where
-  f [u, v, w] = u * ((conj v) * w)
+  f [u, v, w] = (u * (conj v)) * w
 
 -- this definition of triple cross product agrees with the one below.
 
 triCrProd :: Octonion -> Octonion -> Octonion -> Octonion
-triCrProd x y z = (scalarMult 0.5) (x * (cnjy * z) - z * (cnjy * x)) where cnjy = conj y
+triCrProd u v w = (scalarMult 0.5) ((u * cnjv) * w - (w * cnjv) * u) where cnjv = conj v
 
 triCrProdOnList :: [Octonion] -> Octonion
-triCrProdOnList [x,y,z] = triCrProd x y z
+triCrProdOnList [u,v,w] = triCrProd u v w
 triCrProdOnList _ = error "triCrProd requires exactly 3 vectors"
 
 capPhi :: Octonion -> Octonion -> Octonion -> Octonion -> ComplexNumber
@@ -75,6 +75,8 @@ capPhi x y z w = dotProd x (triCrProd y z w)
 capPhiOnList :: [Octonion] -> ComplexNumber
 capPhiOnList [x,y,z,w] = capPhi x y z w
 capPhiOnList _ = error "capPhi is a 4 form! It requires 4 vectors to be evaluated."
+
+capPhiComps = formComps8 4 capPhiOnList
 
 latexPrintCvalForms :: [(String, ComplexNumber)] -> String
 latexPrintCvalForms = concatMap putCoefficient
@@ -89,8 +91,16 @@ latexPrintVvalForms = concatMap putCoefficient
   where
     putCoefficient (s,x) = " + " ++ (show x) ++ s
 
-latexPrintCapPhi = latexPrintCvalForms $ formComps8 4 capPhiOnList
+latexPrintCapPhi = latexPrintCvalForms $ formComps8' 4 capPhiOnList
 
+preQuadCrProdOnList = alternate f
+  where
+    --f [u,v,w,x] = ((conj u * v) * conj w) * x
+    --f [u,v,w,x] = conj u * (v * (conj w * x))
+    --f [u,v,w,x] = u * (conj v * (w * conj x))
+    f [u,v,w,x] = negate $ ((u * conj v) * w) * conj x
+
+isAllOnes = map (\q -> ((capPhiOnList q)**2) + normSquared (imaginary $ preQuadCrProdOnList q)) gen4VsIn8d
 
 -- 
 -- commutator :: Octonion -> Octonion -> Octonion
