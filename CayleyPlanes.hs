@@ -78,20 +78,7 @@ capPhiOnList _ = error "capPhi is a 4 form! It requires 4 vectors to be evaluate
 
 capPhiComps = formComps8 4 capPhiOnList
 
-latexPrintCvalForms :: [(String, ComplexNumber)] -> String
-latexPrintCvalForms = concatMap putCoefficient
-  where
-    putCoefficient (s,1) = '+':s
-    putCoefficient (s,-1) = '-':s
-    putCoefficient (s,x) = (show x)++s
-
--- this function is not convenient yet.
-latexPrintVvalForms :: [(String, Octonion)] -> String
-latexPrintVvalForms = concatMap putCoefficient
-  where
-    putCoefficient (s,x) = " + " ++ (show x) ++ s
-
-latexPrintCapPhi = latexPrintCvalForms $ formComps8' 4 capPhiOnList
+latexPrintCapPhi = latexPrintFormNum $ formComps8' 4 capPhiOnList
 
 preQuadCrProdOnList = alternate f
   where
@@ -106,7 +93,13 @@ quadCrPr x u v w = scalarMult (-0.25) (
 
 quadCrPrOnList [x,u,v,w] = quadCrPr x u v w
 
-isAllOnes = map (\q -> ((capPhiOnList q)**2) + normSquared (imaginary $ preQuadCrProdOnList q)) gen4VsIn8d
+imQuadCrPrOnList = imaginary . quadCrPrOnList
+
+imQdCrPrComps = formComps8' 4 imQuadCrPrOnList
+
+pickCoefficients o = filter (isMultiple o . snd) imQdCrPrComps
+
+latexPrintImQdCrPrComp o = (++"\\right)"++ (nvecNames [o])) . ("\\left("++) . latexPrintFormNum $ map (\(x,y)->(x,real (y/o))) $ pickCoefficients o
 
 -- 
 -- commutator :: Octonion -> Octonion -> Octonion

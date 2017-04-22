@@ -76,6 +76,8 @@ imaginary (Octonion (a,b)) = Octonion(CQ.imaginary a, b)
 dotProd :: Octonion -> Octonion -> ComplexNumber
 dotProd u v = real (u * conj v)
 
+isMultiple o1 o2 = isReal (o2/o1)
+
 instance Num Octonion where
   (+)                     = add
   (*)                     = omult

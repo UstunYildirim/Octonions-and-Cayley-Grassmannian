@@ -1,4 +1,5 @@
 
+import ComplexOctonions
 import CayleyPlanes
 
-main = putStrLn latexPrintCapPhi
+main = mapM_ (putStrLn . latexPrintImQdCrPrComp) imagOctGens

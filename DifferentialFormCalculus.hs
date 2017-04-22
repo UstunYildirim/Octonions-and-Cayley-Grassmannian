@@ -60,3 +60,19 @@ wdgPrOnComps f1 f2 = collectLikeTerms $ nonZeroes [combine c1 c2 | c1 <- f1, c2 
   collectLikeTerms = map reduceGroups . groupBy (\a b-> fst a == fst b) . sortOn fst
   reduceGroups l = (head ns, sum vals) where
     (ns, vals) = unzip l
+
+-- latex print functions below do not produce anything particularly pretty yet
+latexPrintForm :: (Show covs, Show vals) => [(covs, vals)] -> String 
+latexPrintForm = latexPrintFormWith (show) (show)
+
+latexPrintFormWith :: (covs -> String) -> (vals -> String) -> [(covs, vals)] -> String
+latexPrintFormWith covShow valShow = {- intercalate " " . -} concat . map (\(c,v)-> (valShow v) ++ (covShow c))
+
+latexPrintFormValsWith :: (vals -> String) -> [(String, vals)] -> String
+latexPrintFormValsWith valShow = latexPrintFormWith id valShow
+
+latexPrintFormNum :: (Num vals, Eq vals, Show vals) => [(String, vals)] -> String
+latexPrintFormNum = latexPrintFormWith id dropOnes where
+  dropOnes 1 = " +"
+  dropOnes (-1) = " -"
+  dropOnes a = " +" ++ show a
