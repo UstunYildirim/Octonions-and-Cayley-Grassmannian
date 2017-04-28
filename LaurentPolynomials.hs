@@ -15,7 +15,7 @@ data LPoly a = Poly [LTerm a]
 instance (Show a) => Show (LTerm a) where
   show (Term c ls) = concat ((show c):vars) where
     vars = map paste ls
-    paste (var, 1) = var
+    paste (var, 1) = ' ':var
     paste (var, pow) = var ++ "^{" ++ show pow ++ "}"
 
 instance (Show a) => Show (LPoly a) where
@@ -62,13 +62,13 @@ plugInValInTerm c v q   =  retVal where
 plugInVal :: (Eq a, Num a) => String -> a -> LPoly a -> LPoly a
 plugInVal c v (Poly ls) = simplify $ Poly (map (plugInValInTerm c v) ls)
 
-multLTerms :: Num a => LTerm a -> LTerm a -> LTerm a
+multLTerms :: (Num a) => LTerm a -> LTerm a -> LTerm a
 multLTerms (Term c1 ls1) (Term c2 ls2) = Term (c1*c2) (ls1++ls2)
 
-multLTermLPoly :: Num a => LTerm a -> LPoly a -> LPoly a
+multLTermLPoly :: (Num a) => LTerm a -> LPoly a -> LPoly a
 multLTermLPoly t1 (Poly ls) = Poly $ map (multLTerms t1) ls
 
-multLPolys :: Num a => LPoly a -> LPoly a -> LPoly a
+multLPolys :: (Num a) => LPoly a -> LPoly a -> LPoly a
 multLPolys (Poly ls1) (Poly ls2) = Poly [multLTerms t1 t2 | t1 <- ls1, t2 <- ls2]
 
 powerLPoly :: (Eq a, Num a) => Int -> LPoly a -> LPoly a

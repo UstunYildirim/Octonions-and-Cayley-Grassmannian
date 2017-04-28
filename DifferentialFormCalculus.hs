@@ -2,12 +2,12 @@ module DifferentialFormCalculus where
 
 import Data.List
 
-data Sign = Plus | Minus | Zero deriving (Show, Eq)
+--data Sign = Plus | Minus | Zero deriving (Show, Eq)
 
-findPermutationSign :: (Ord a) => [a] -> Int
+findPermutationSign :: (Ord a, Num b) => [a] -> b
 findPermutationSign = findPermutationSignBy compare
 
-findPermutationSignBy :: (Eq a) => (a -> a -> Ordering) -> [a] -> Int
+findPermutationSignBy :: (Eq a, Num b) => (a -> a -> Ordering) -> [a] -> b
 findPermutationSignBy ord x = if res == -1 then 0
   else if even res then 1
     else (-1)
