@@ -4,6 +4,7 @@ import ComplexOctonions
 import ComplexNumbers (ComplexNumber, i)
 import Data.List
 import DifferentialFormCalculus
+import LaurentPolynomials
 
 gen3VsIn7d :: [[Octonion]]
 gen3VsIn8d :: [[Octonion]]
@@ -97,8 +98,13 @@ imQuadCrPrOnList = imaginary . quadCrPrOnList
 
 imQdCrPrComps = formComps8' 4 imQuadCrPrOnList
 
-pickCoefficients o = filter (isMultiple o . snd) imQdCrPrComps
+pickCoeffsIQCP o = map (\(x,y)->(x,real (y/o))) $ filter (isMultiple o . snd) imQdCrPrComps
 
-latexPrintImQdCrPrComp o = (++"\\right)"++ (nvecNames [o])) . ("\\left("++) . latexPrintFormNum $ map (\(x,y)->(x,real (y/o))) $ pickCoefficients o
+latexPrintImQdCrPrComp o = (++"\\right)"++ (nvecNames [o])) . ("\\left("++) . latexPrintFormNum $ pickCoeffsIQCP o
 
+definingEquation o = Poly . map createTerm $ pickCoeffsIQCP o where
+    createTerm (x,y) = Term (y) [(x',1)]
+      where x' = init $ drop 3 x
+
+definingEquations = map definingEquation imagOctGens
 

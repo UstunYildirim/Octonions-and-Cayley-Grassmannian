@@ -1,5 +1,4 @@
 
-import ComplexOctonions
-import CayleyPlanes
+import EigenvalueList
 
-main = mapM_ (putStrLn . latexPrintImQdCrPrComp) imagOctGens
+main = putStrLn $ latexTableOfEigValsAndVecs eigVecsInXminWithVals

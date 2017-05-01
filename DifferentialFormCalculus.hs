@@ -2,8 +2,6 @@ module DifferentialFormCalculus where
 
 import Data.List
 
---data Sign = Plus | Minus | Zero deriving (Show, Eq)
-
 findPermutationSign :: (Ord a, Num b) => [a] -> b
 findPermutationSign = findPermutationSignBy compare
 

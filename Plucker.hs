@@ -45,8 +45,16 @@ allCoordinates = ngenFromBasis 4 "01234567"
 distance :: String -> String -> Int
 distance c1 c2 = 4 - length (intersect c1 c2)
 
-localize :: (Eq a, Num a) => String -> LPoly a -> LPoly a
-localize locChart = reduceToLocalVars where
+localizeTo :: (Eq a, Num a) => String -> LPoly a -> LPoly a
+localizeTo locChart = reduceToLocalVars where
   allNonLocalVarsSorted = drop 17 $ sortOn (distance locChart) allCoordinates
   replaceVar var = plugInIdentity var (genOrderedPluckerRel var locChart)
   reduceToLocalVars = foldr (.) id $ map replaceVar allNonLocalVarsSorted
+
+localizeDefEqs locChart = map (simplify . localizeTo locChart) definingEquations
+
+latexLocalizedDefEqs locChart = map (mapVars typeAsPlucker) $ localizeDefEqs locChart
+  where
+    typeAsPlucker = ("p_{"++) . (++"}")
+
+

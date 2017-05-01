@@ -1,0 +1,21 @@
+ $1$ & $\wil e_{0123}, \wil e_{0145}, \wil e_{0167}, \wil e_{0257}, \wil e_{1346}, \wil e_{2345}, \wil e_{2367}, \wil e_{4567}$ \\ \hline
+ $1 \gamma^{-2}$ & $\wil e_{0156}, \wil e_{2356}$ \\ \hline
+ $1 \gamma^{-2} \lambda^{-2}$ & $\wil e_{1356}$ \\ \hline
+ $1 \gamma^{-2} \lambda^{2}$ & $\wil e_{0256}$ \\ \hline
+ $1 \gamma^{-2} \mu^{-2}$ & $\wil e_{1256}$ \\ \hline
+ $1 \gamma^{-2} \mu^{2}$ & $\wil e_{0356}$ \\ \hline
+ $1 \gamma^{-1} \mu^{-1}$ & $\wil e_{0125}, \wil e_{1236}, \wil e_{1456}, \wil e_{2567}$ \\ \hline
+ $1 \gamma^{-1} \mu$ & $\wil e_{0136}, \wil e_{0235}, \wil e_{0567}, \wil e_{3456}$ \\ \hline
+ $1 \gamma \mu^{-1}$ & $\wil e_{0127}, \wil e_{1234}, \wil e_{1467}, \wil e_{2457}$ \\ \hline
+ $1 \gamma \mu$ & $\wil e_{0134}, \wil e_{0237}, \wil e_{0457}, \wil e_{3467}$ \\ \hline
+ $1 \gamma^{2}$ & $\wil e_{0147}, \wil e_{2347}$ \\ \hline
+ $1 \gamma^{2} \lambda^{-2}$ & $\wil e_{1347}$ \\ \hline
+ $1 \gamma^{2} \lambda^{2}$ & $\wil e_{0247}$ \\ \hline
+ $1 \gamma^{2} \mu^{-2}$ & $\wil e_{1247}$ \\ \hline
+ $1 \gamma^{2} \mu^{2}$ & $\wil e_{0347}$ \\ \hline
+ $1 \lambda^{-2} \mu^{-2}$ & $\wil e_{1257}$ \\ \hline
+ $1 \lambda^{-2} \mu^{2}$ & $\wil e_{0357}$ \\ \hline
+ $1 \lambda^{2} \mu^{-2}$ & $\wil e_{1246}$ \\ \hline
+ $1 \lambda^{2} \mu^{2}$ & $\wil e_{0346}$ \\ \hline
+ $1 \mu^{-2}$ & $\wil e_{1245}, \wil e_{1267}$ \\ \hline
+ $1 \mu^{2}$ & $\wil e_{0345}, \wil e_{0367}$ 
