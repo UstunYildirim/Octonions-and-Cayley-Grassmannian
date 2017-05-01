@@ -25,9 +25,10 @@ eigvals = [la*mu, lai*mui,
 
 indEigVals = map product $ uniqStrIncNtuple 4 eigvals
 
-pairWith4Vecs = zip indEigVals fourVecs
-  where
-    fourVecs = allCoordinates
+eigValLookUp var = lookup var pairWith4Vecs'
+
+pairWith4Vecs' = zip allCoordinates indEigVals
+pairWith4Vecs = zip indEigVals allCoordinates
 
 vecWithTilde = ("\\wil e_{" ++) . (++ "}")
 

@@ -55,7 +55,7 @@ chbas = Matrix [[1,     1],
 chbasOp = Matrix [[1,      1],
                   [-ipoly, ipoly]]
 
-changeOfBasis = matDirSum (matDirSum chbas chbas) (matDirSum chbasOp chbasOp)
+changeOfBasis = matDirSum (matDirSum chbas chbas) (matDirSum chbas chbas)
 
 -- the following is an 7x70 matrix representing the imaginary part of the 
 -- quadruple cross product. 
@@ -73,7 +73,7 @@ transformedDefEqs = map (filter (\(_,a)-> a/=0)) . map (zip allCoordinates) $ ma
 quarter = Poly [Term (0.25) []]
 halfQuarter = Poly [Term (0.125) []]
 
-normTransDefEqs = zipWith zipper [-halfQuarter*ipoly, -quarter, -quarter*ipoly, quarter, -quarter*ipoly, -quarter, quarter*ipoly] transformedDefEqs
+normTransDefEqs = zipWith zipper [-halfQuarter*ipoly, quarter, -quarter*ipoly, quarter, -quarter*ipoly, -quarter, quarter*ipoly] transformedDefEqs
   where
     zipper scalar = map (\(var, coeff) -> (var, scalar * coeff))
 

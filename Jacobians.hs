@@ -36,4 +36,25 @@ jacobianOfDefEqsAtO locChart = Matrix $ map createRow normTransDefEqs
     createRow ls = map lookupEntry (localVars locChart) where
       lookupEntry lvar = let val = lookup lvar ls in
         if isNothing val then 0 else fromJust val
-    
+
+genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart
+  where
+    allCols = transpose . matrixAsList $ jacobianOfDefEqsAtO locChart
+    allInfo = zip allCols (localVars locChart)
+    (zeroColsWvecs, nonZeroColsWvecs) = partition test allInfo
+    test = (== zeroRow) . fst
+    zeroRow = head (matrixAsList (zeroMatrix 1 7))
+    nonZeroCols = map fst nonZeroColsWvecs
+    generatorsFromNonZeroPart = map createVectors $ matchCols nonZeroCols
+    createVectors (c1,c2) = if c1 == c2
+      then fromJust (lookup c1 allInfo) ++ " - " ++ fromJust (lookup c2 allInfo)
+      else fromJust (lookup c1 allInfo) ++ " + " ++ fromJust (lookup c2 allInfo)
+    matchCols [] = []
+    matchCols (c:cs) = if isNothing mayCol
+      then matchCols cs
+      else (c,col):matchCols (delete col cs)
+      where
+        mayCol = find (isColMult c) cs
+        col = fromJust mayCol
+    isColMult c1 c2 = c1 == c2 || (map (*(-1)) c1) == c2
+
