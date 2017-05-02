@@ -121,3 +121,17 @@ mapVarsInTerms f (Term c ls) = Term c (map (\(v,p) -> (f v,p) ) ls)
 mapVars :: (String -> String) -> LPoly a -> LPoly a
 mapVars f (Poly ls) = Poly $ map (mapVarsInTerms f) ls
 
+parDerTerm' :: (Eq a, Num a) => String -> LTerm a -> LTerm a
+parDerTerm' var q@(Term c ls) = if isNothing maybeVarPower then Term 0 [] else Term (c*fromIntegral power) newls
+  where
+    maybeVarPower = find ((==var) . fst) ls
+    power = snd $ fromJust maybeVarPower
+    newls = decreasePowerOfVar ls
+    decreasePowerOfVar [] = []
+    decreasePowerOfVar ((v,p):rest) = if v == var then ((v,p-1):rest) else (v,p):decreasePowerOfVar rest
+
+parDerTerm :: (Eq a, Num a) => String -> LTerm a -> LTerm a
+parDerTerm var = simplifyTerm . parDerTerm' var . simplifyTerm
+
+parDer :: (Eq a, Num a) => String -> LPoly a -> LPoly a
+parDer var = simplify . Poly . map (parDerTerm' var) . polyAsList . simplify

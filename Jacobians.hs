@@ -52,9 +52,17 @@ genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart
     matchCols [] = []
     matchCols (c:cs) = if isNothing mayCol
       then matchCols cs
-      else (c,col):matchCols (delete col cs)
+      else 
+        if eigValLookUp (fromJust $ lookup c allInfo) == eigValLookUp (fromJust $ lookup col allInfo)
+          then (c,col):matchCols (delete col cs) 
+          else error $ "Eigenvalues do not match! " ++
+            "(Actually this error might be eliminated but " ++
+            "implementation is not necessary at the moment.)"
       where
-        mayCol = find (isColMult c) cs
+        mayCol = find (doColsPair c) cs
         col = fromJust mayCol
-    isColMult c1 c2 = c1 == c2 || (map (*(-1)) c1) == c2
+    doColsPair c1 c2 = isColsLinDep c1 c2 && doColsHaveSameEigVal c1 c2
+    isColsLinDep c1 c2 = c1 == c2 || (map (*(-1)) c1) == c2
+    doColsHaveSameEigVal c1 c2 =
+      eigValLookUp (fromJust $ lookup c1 allInfo) == eigValLookUp (fromJust $ lookup c2 allInfo)
 

@@ -48,8 +48,11 @@ sublist indexSet = map snd . filter (\(i,_) -> elem i indexSet) . zip [0..]
 submat :: [Int] -> [Int] -> Matrix a -> Matrix a
 submat i j = Matrix . map (sublist j) . sublist i . matrixAsList
 
-row i = submat [i] [0..]
-col j = submat [0..] [j]
+rows i = submat i [0..]
+cols j = submat [0..] j
+
+row i = rows [i]
+col j = cols [j]
 
 trace :: (Num a) => Matrix a -> a
 trace (Matrix m) = sum $ zipWith (\r i-> r!!i) m [0..]
@@ -95,5 +98,8 @@ minor i j = det . submat i j
 
 indMatOnExtAlg :: (Eq a, Num a) => Matrix a -> Int -> Matrix a
 indMatOnExtAlg _ 0 = 1
-indMatOnExtAlg m n = Matrix [[minor i j m | j <- ls ] | i <- ls ] where
-  ls = uniqStrIncNtuple n [0.. numRow m-1]
+indMatOnExtAlg m n = Matrix [[minor i j m | j <- lsCol ] | i <- lsRow ] where
+  lsRow = uniqStrIncNtuple n [0.. numRow m-1]
+  lsCol = uniqStrIncNtuple n [0.. numCol m-1]
+
+

@@ -46,6 +46,6 @@ latexTableOfEigValsAndVecs pairs = intercalate "\\\\ \\hline\n" $ map genLine (c
 
 eigVecsInXminWithVals = map (\(n,vec) -> (indEigVals !! n, vec)) . filter test $ zip [0..] allCoordinates
   where
-    test (n,_) = col n newCoordsImQdCrPr == zeroMatrix 7 1
+    test (n,_) = col n newCoordsImQdCrPr == zeroMatrix 8 1
 
 eigVecsInXmin = map snd eigVecsInXminWithVals

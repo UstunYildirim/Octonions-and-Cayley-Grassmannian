@@ -34,6 +34,9 @@ data Octonion = Octonion {  octonion :: (Quarternion,Quarternion)
 octonionAsList :: Octonion -> [Quarternion]
 octonionAsList (Octonion (a,b)) = [a,b]
 
+octonionAsCxList :: Octonion -> [ComplexNumber]
+octonionAsCxList (Octonion (Quarternion (a,b,c,d),Quarternion(x,y,z,w))) = [a,b,c,d,x,-y,-z,-w]
+
 coordinateWiseOperation :: (Quarternion -> Quarternion -> Quarternion) -> Octonion -> Octonion -> Octonion
 coordinateWiseOperation f (Octonion(a,b)) (Octonion(x,y)) = Octonion(f a x, f b y)
 

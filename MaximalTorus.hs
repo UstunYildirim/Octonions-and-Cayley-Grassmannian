@@ -22,7 +22,11 @@ doesInvMatPreserveCapPhi m = (capPhiAsRowMatrix * indMatOnExtAlg m 4) == capPhiA
 
 p var = Poly [Term (1/2) [(var,1)], Term (1/2) [(var,-1)]]
 m var = Poly [Term (1/2) [(var,1)], Term (-1/2) [(var,-1)]]
+half = Poly [Term (0.5) []]
+quarter = Poly [Term (0.25) []]
+halfQuarter = Poly [Term (0.125) []]
 ipoly = Poly [Term (i) []]
+halfiPoly = Poly [Term (0.5*i) []]
 
 lMat :: String -> Matrix (LPoly ComplexNumber)
 lMat var = Matrix [[p var, (-ipoly)*m var],
@@ -52,6 +56,8 @@ doesInvOfCpreserveCapPhi = doesInvMatPreserveCapPhi cMat
 
 chbas = Matrix [[1,     1],
                 [ipoly, -ipoly]]
+chbasInv = Matrix [[half, -halfiPoly],
+                   [half, halfiPoly]]
 chbasOp = Matrix [[1,      1],
                   [-ipoly, ipoly]]
 
@@ -59,7 +65,7 @@ changeOfBasis = matDirSum (matDirSum chbas chbas) (matDirSum chbas chbas)
 
 -- the following is an 7x70 matrix representing the imaginary part of the 
 -- quadruple cross product. 
-imQdCrPrAsMat = Matrix [map (value . flip lookup (pickCoeffsIQCP v)) basis | v <- imagOctGens]
+imQdCrPrAsMat = Matrix [map (value . flip lookup (pickCoeffsIQCP v)) basis | v <- octGens]
   where
     basis = map (("e^{" ++) . (++ "}")) allCoordinates
     value Nothing = Poly []
@@ -69,9 +75,6 @@ imQdCrPrAsMat = Matrix [map (value . flip lookup (pickCoeffsIQCP v)) basis | v <
 newCoordsImQdCrPr = imQdCrPrAsMat * (indMatOnExtAlg changeOfBasis 4)
 
 transformedDefEqs = map (filter (\(_,a)-> a/=0)) . map (zip allCoordinates) $ matrixAsList newCoordsImQdCrPr
-
-quarter = Poly [Term (0.25) []]
-halfQuarter = Poly [Term (0.125) []]
 
 normTransDefEqs = zipWith zipper [-halfQuarter*ipoly, quarter, -quarter*ipoly, quarter, -quarter*ipoly, -quarter, quarter*ipoly] transformedDefEqs
   where
