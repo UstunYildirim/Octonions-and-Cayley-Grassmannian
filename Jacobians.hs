@@ -30,7 +30,7 @@ latexNewLocalizedDefEqs locChart = map (mapVars typeAsNewPlucker) $ localizeNewD
 -- we use this shortcut to compute Jacobians
 localVars locChart = tail . take 17 $ sortOn (distance locChart) allCoordinates
 
-jacobianOfDefEqsAtO :: String -> Matrix (LPoly ComplexNumber)
+jacobianOfDefEqsAtO :: String -> Matrix ComplexNumber
 jacobianOfDefEqsAtO locChart = Matrix $ map createRow normTransDefEqs
   where
     createRow ls = map lookupEntry (localVars locChart) where
@@ -66,3 +66,7 @@ genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart
     doColsHaveSameEigVal c1 c2 =
       eigValLookUp (fromJust $ lookup c1 allInfo) == eigValLookUp (fromJust $ lookup c2 allInfo)
 
+jacobian :: (Eq a, Num a) => [String] -> [LPoly a] -> Matrix (LPoly a)
+jacobian vars polys = Matrix [[parDer var poly | var <- vars] | poly <- polys]
+
+jacobianInLocalCoords locChart = jacobian (localVars locChart)

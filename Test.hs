@@ -47,17 +47,29 @@ imQdCrPrAsMat' = transposeMat . fmap cxToPoly $ Matrix [octonionAsCxList $ imQua
 -- because some of the will be supplied by the plucker relations
 
 wil0246 = indMatOnExtAlg (cols [0,2,4,6] changeOfBasis) 4
-coorEqsOne = fst . head . filter ((==1) . snd) . zip allCoordinates $ head . transpose $ matrixAsList wil0246
--- it turns out coorEqsOne = "0246"
-eqsAtProb = map simplify $ localizeDefEqs coorEqsOne
-locVars' = localVars coorEqsOne
-test v = if elem v locVars' then "T" else "FALSE"
+problempnt = fst . head . filter ((==1) . snd) . zip allCoordinates . head . transpose $ matrixAsList wil0246
+-- it turns out problempnt = "0246"
+eqsAtProb = map simplify $ localizeDefEqs problempnt
+locVars' = localVars problempnt
+plugZeroes' :: (Eq a, Num a) => LPoly a -> LPoly a
+plugZeroes' = foldr (.) id $ map (\v -> plugInVal v 0) locVars'
 
-isEverythingLocalized = map (mapVars test) eqsAtProb
--- THERE IS SOMETHING WRONG HERE!
--- CHECK WHAT'S UP WITH THIS!!!
---
--- ALSO, WE WERE USING A SHORTCUT WHEN COMPUTING JACOBIANS
+take' = foldr (.) id $ map (\v -> plugInVal v 0) locVars'
+
+resUsingTransformedEqs = map (map plugZeroes') . matrixAsList . jacobianInLocalCoords problempnt $ localizeNewDefEqs problempnt
+
+-- WE WERE USING A SHORTCUT WHEN COMPUTING JACOBIANS
 -- CHECK THAT AS WELL! COMPARE IT TO ACTUALLY LOCALIZING
 -- EQUATIONS AND THEN TAKING DERIVATIVES AND PLUGGING IN
--- ZEROES EVERYWHERE
+-- ZEROES EVERYWHERE 
+-- UPDATE:
+-- this does not appear to be the problem:
+-- we get the same matrix for at least one of the problem points
+
+k = jacobianInLocalCoords problempnt $ localizeDefEqs problempnt
+z = filter (flip elem locVars' . fst) . zip allCoordinates . head . transpose $ matrixAsList wil0246
+plugAllz = foldr (.) id $ map createPlugFn z
+  where
+    createPlugFn = uncurry plugInVal
+
+jacobianUsingStdEqs = fmap plugAllz k

@@ -54,32 +54,33 @@ doesInvOfApreserveCapPhi = doesInvMatPreserveCapPhi aMat
 doesInvOfBpreserveCapPhi = doesInvMatPreserveCapPhi bMat
 doesInvOfCpreserveCapPhi = doesInvMatPreserveCapPhi cMat
 
-chbas = Matrix [[1,     1],
-                [ipoly, -ipoly]]
-chbasInv = Matrix [[half, -halfiPoly],
-                   [half, halfiPoly]]
-chbasOp = Matrix [[1,      1],
-                  [-ipoly, ipoly]]
+chbas = Matrix [[1,  1],
+                [i, -i]]
+chbasInv = Matrix [[1/2, -i/2],
+                   [1/2, i/2]]
+chbasOp = Matrix [[1,  1],
+                  [-i, i]]
 
+changeOfBasis :: Matrix ComplexNumber
 changeOfBasis = matDirSum (matDirSum chbas chbas) (matDirSum chbas chbas)
 
--- the following is an 7x70 matrix representing the imaginary part of the 
+-- the following is an 8x70 matrix representing the imaginary part of the 
 -- quadruple cross product. 
+imQdCrPrAsMat :: Matrix ComplexNumber
 imQdCrPrAsMat = Matrix [map (value . flip lookup (pickCoeffsIQCP v)) basis | v <- octGens]
   where
     basis = map (("e^{" ++) . (++ "}")) allCoordinates
-    value Nothing = Poly []
-    value (Just a) = Poly [Term a []]
+    value Nothing = 0
+    value (Just a) = a
 
-
+newCoordsImQdCrPr :: Matrix ComplexNumber
 newCoordsImQdCrPr = imQdCrPrAsMat * (indMatOnExtAlg changeOfBasis 4)
 
 transformedDefEqs = map (filter (\(_,a)-> a/=0)) . map (zip allCoordinates) $ matrixAsList newCoordsImQdCrPr
 
-normTransDefEqs = zipWith zipper [-halfQuarter*ipoly, quarter, -quarter*ipoly, quarter, -quarter*ipoly, -quarter, quarter*ipoly] transformedDefEqs
+normTransDefEqs = zipWith zipper [1, -i/8, 1/4, -i/4, 1/4, -i/4, -1/4, i/4] transformedDefEqs
   where
     zipper scalar = map (\(var, coeff) -> (var, scalar * coeff))
-
 
 latexPrintRescaledEqs = map latexPrintEq normTransDefEqs
   where
@@ -87,3 +88,4 @@ latexPrintRescaledEqs = map latexPrintEq normTransDefEqs
     processVarAndCoeff (var, 1) = " + \\wil p_{" ++ var ++ "}"
     processVarAndCoeff (var, -1) = " - \\wil p_{" ++ var ++ "}"
     processVarAndCoeff _ = error "coefficients other than +1, -1 are not handled!"
+
