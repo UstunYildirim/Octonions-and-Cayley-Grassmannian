@@ -23,7 +23,6 @@ instance (Eq a, Num a) => Num (Matrix a) where
   fromInteger n = Matrix [[fromInteger n]]
   negate = fmap negate
 
-
 matrixAsList (Matrix ls) = ls
 listAsMatrix ls = Matrix ls
 
@@ -102,4 +101,5 @@ indMatOnExtAlg m n = Matrix [[minor i j m | j <- lsCol ] | i <- lsRow ] where
   lsRow = uniqStrIncNtuple n [0.. numRow m-1]
   lsCol = uniqStrIncNtuple n [0.. numCol m-1]
 
-
+latexPrintMatrix :: (Show a) => Matrix a -> String
+latexPrintMatrix = ("\\begin{pmatrix}\n" ++) .(++ "\n\\end{pmatrix}\n") . intercalate " \\\\ \n" . map (intercalate " & " . map show) . matrixAsList
