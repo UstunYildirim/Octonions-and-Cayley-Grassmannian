@@ -43,7 +43,7 @@ genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart
     allInfo = zip allCols (localVars locChart)
     (zeroColsWvecs, nonZeroColsWvecs) = partition test allInfo
     test = (== zeroRow) . fst
-    zeroRow = head (matrixAsList (zeroMatrix 1 7))
+    zeroRow = head (matrixAsList (zeroMatrix 1 8))
     nonZeroCols = map fst nonZeroColsWvecs
     generatorsFromNonZeroPart = map createVectors $ matchCols nonZeroCols
     createVectors (c1,c2) = if c1 == c2
@@ -55,9 +55,7 @@ genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart
       else 
         if eigValLookUp (fromJust $ lookup c allInfo) == eigValLookUp (fromJust $ lookup col allInfo)
           then (c,col):matchCols (delete col cs) 
-          else error $ "Eigenvalues do not match! " ++
-            "(Actually this error might be eliminated but " ++
-            "implementation is not necessary at the moment.)"
+          else error $ "Eigenvalues do not match!"
       where
         mayCol = find (doColsPair c) cs
         col = fromJust mayCol
