@@ -64,6 +64,9 @@ chbasOp = Matrix [[1,  1],
 changeOfBasis :: Matrix ComplexNumber
 changeOfBasis = matDirSum (matDirSum chbas chbas) (matDirSum chbas chbas)
 
+changeOfBasisInv :: Matrix ComplexNumber
+changeOfBasisInv = matDirSum (matDirSum chbasInv chbasInv) (matDirSum chbasInv chbasInv)
+
 -- the following is an 8x70 matrix representing the imaginary part of the 
 -- quadruple cross product. 
 imQdCrPrAsMat :: Matrix ComplexNumber

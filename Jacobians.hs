@@ -37,9 +37,11 @@ jacobianOfNewDefEqsAtO locChart = Matrix . map createRow $ tail normTransDefEqs 
 genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart where
   allCols = transpose . matrixAsList $ jacobianOfNewDefEqsAtO locChart
   allInfo = zip allCols (localVars locChart)
+-- THERE IS AN ERROR HERE
+-- we use allInfo to lookup !!!!! IT IS NOT A FUNCTION!!!
   (zeroColsWvecs, nonZeroColsWvecs) = partition test allInfo
   test = (== zeroRow) . fst
-  zeroRow = head (matrixAsList (zeroMatrix 1 8))
+  zeroRow = head (matrixAsList (zeroMatrix 1 7))
   nonZeroCols = map fst nonZeroColsWvecs
   generatorsFromNonZeroPart = map createVectors $ matchCols nonZeroCols
   createVectors (c1,c2) = if c1 == c2
@@ -49,9 +51,10 @@ genKerOfJac locChart = map snd zeroColsWvecs ++ generatorsFromNonZeroPart where
   matchCols (c:cs) = if isNothing mayCol
     then matchCols cs
     else 
-      if eigValLookUp (fromJust $ lookup c allInfo) == eigValLookUp (fromJust $ lookup col allInfo)
-        then (c,col):matchCols (delete col cs) 
-        else error $ "Eigenvalues do not match!"
+      --if eigValLookUp (fromJust $ lookup c allInfo) == eigValLookUp (fromJust $ lookup col allInfo)
+        -- then
+        (c,col):matchCols (delete col cs) 
+        --else error $ "Eigenvalues do not match!"
     where
       mayCol = find (doColsPair c) cs
       col = fromJust mayCol
@@ -64,3 +67,7 @@ jacobian :: (Eq a, Num a) => [String] -> [LPoly a] -> Matrix (LPoly a)
 jacobian vars polys = Matrix [[parDer var poly | var <- vars] | poly <- polys]
 
 jacobianInLocalCoords locChart = jacobian (localVars locChart)
+
+(regularFxdPnts, singularFxdPnts) = partition ((==12) . length . genKerOfJac) eigVecsInXmin
+
+huaa = map (\pnt -> (fromJust $ eigValLookUp pnt, genKerOfJac pnt)) regularFxdPnts

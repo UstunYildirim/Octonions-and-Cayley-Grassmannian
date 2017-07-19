@@ -1,8 +1,12 @@
 
+import System.IO
 import MatrixCalculus
 import Jacobians
-import EigenvalueList
+import SingularTest
 
-main = mapM_ (putStrLn) . 
-  zipWith (\v m -> "\\wil J_{"++ v ++ "} = \n" ++ m) eigVecsInXmin $ 
-    map (latexPrintMatrix . jacobianOfNewDefEqsAtO) eigVecsInXmin
+theMat = indMatOnExtAlg (rows [1..7] . jacobianInLocalCoords "0123" $ localizeNewDefEqs "0123") 4
+
+main = do 
+  hSetBuffering stdout NoBuffering
+  sc <- sampleComputation
+  putStrLn $ show sc

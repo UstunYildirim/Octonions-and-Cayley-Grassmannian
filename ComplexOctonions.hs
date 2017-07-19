@@ -119,8 +119,7 @@ instance Floating Octonion where
     | n > 0 = q*(q**(n-1))
     | otherwise = recip (q ** (-n))
 
-isCompositionAlgebra = and $ map (==0) [conj (u*v) - (conj v)*(conj u)| u<-octGens, v<-octGens] where
-  n = normSquared
+isCompositionAlgebra = and [conj (u*v) == (conj v)*(conj u)| u<-octGens, v<-octGens]
 
 isReal :: Octonion -> Bool
 isReal (Octonion (a,0)) = CQ.isReal a

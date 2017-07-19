@@ -36,6 +36,10 @@ formComps8 n f = map (\(a,b) -> (vNames a, b)) $ formComps n octGens f
 formComps7' n f = map (\(a,b) -> (ncovNames a, b)) $ formComps n imagOctGens f
 formComps8' n f = map (\(a,b) -> (ncovNames a, b)) $ formComps n octGens f
 
+preCrProdOnList :: [Octonion] -> Octonion
+preCrProdOnList = alternate f where
+  f [u, v] = (conj v) * u
+
 crProd :: Octonion -> Octonion -> Octonion
 crProd u v = imaginary ((conj v) * u)
 
@@ -43,7 +47,7 @@ crProdOnList :: [Octonion] -> Octonion
 crProdOnList [u,v] = crProd u v
 
 phi :: Octonion -> Octonion -> Octonion -> ComplexNumber
-phi u v w = dotProd (crProd u v) w
+phi u v w = dotProd u (crProd v w)
 
 phiOnList :: [Octonion] -> ComplexNumber
 phiOnList [u,v,w] = phi u v w
