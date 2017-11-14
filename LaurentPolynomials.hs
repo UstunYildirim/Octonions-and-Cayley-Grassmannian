@@ -95,12 +95,12 @@ powerLPoly :: (Eq a, Num a) => Int -> LPoly a -> LPoly a
 powerLPoly 0 _ = Poly [Term 1 []]
 powerLPoly n p = (iterate (simplify . multLPolys p) p) !! (n-1)
 
-plugInIdentityInTerm :: (Eq a, Num a) => String -> LPoly a -> LTerm a -> LPoly a
+plugInIdentityInTerm :: (Eq a, Fractional a, Num a) => String -> LPoly a -> LTerm a -> LPoly a
 plugInIdentityInTerm c v q   =  retVal where
   Term k ls             =  simplifyTerm q
   maybeIndex            =  findIndex ((==c) . fst) ls
   (init,(_,power):rest) =  splitAt (fromJust maybeIndex) ls
-  vpowered              =  powerLPoly power v
+  vpowered              =  if power >= 0 then powerLPoly power v else powerLPoly (-power) (invertLMonomial v)
   retVal                =  if isNothing maybeIndex
                             then Poly [Term k ls]
                             else multLTermLPoly (Term k (init++rest)) vpowered
@@ -112,7 +112,7 @@ sumPolys :: [LPoly a] -> LPoly a
 sumPolys [] = Poly []
 sumPolys (Poly ls:rest) = Poly $ ls ++ (polyAsList $ sumPolys rest)
 
-plugInIdentity :: (Eq a, Num a) => String -> LPoly a -> LPoly a -> LPoly a
+plugInIdentity :: (Eq a, Fractional a, Num a) => String -> LPoly a -> LPoly a -> LPoly a
 plugInIdentity c v (Poly ls) = sumPolys $ map (plugInIdentityInTerm c v) ls
 
 mapVarsInTerms :: (String -> String) -> LTerm a -> LTerm a
@@ -135,3 +135,10 @@ parDerTerm var = simplifyTerm . parDerTerm' var . simplifyTerm
 
 parDer :: (Eq a, Num a) => String -> LPoly a -> LPoly a
 parDer var = simplify . Poly . map (parDerTerm' var) . polyAsList . simplify
+
+invertLTerm :: (Fractional a) => LTerm a -> LTerm a
+invertLTerm (Term a ls) = Term (recip a) $ map (\(v,p)->(v,-p)) ls
+
+invertLMonomial :: (Fractional a) => LPoly a -> LPoly a
+invertLMonomial (Poly [t]) = (Poly [invertLTerm t])
+invertLMonomial _ = error "Given polynomial is not monomial."

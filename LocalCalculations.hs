@@ -1,4 +1,4 @@
-module SingularPointsTests where
+module LocalCalculations where
 
 import Control.Monad
 import System.IO

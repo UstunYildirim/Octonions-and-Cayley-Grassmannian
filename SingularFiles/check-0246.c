@@ -16,6 +16,7 @@ ideal J = I,(minor(H,4));
 
 J = groebner(J);
 J = radical(J);
+J = groebner(J);
 
 
 matrix M = jacob(J);

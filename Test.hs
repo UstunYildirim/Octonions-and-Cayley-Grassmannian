@@ -73,3 +73,13 @@ plugAllz = foldr (.) id $ map createPlugFn z
     createPlugFn = uncurry plugInVal
 
 jacobianUsingStdEqs = fmap plugAllz k
+
+
+
+--indEigValPowers = map (plugInVal "\\lambda" 1 . parDer "\\lambda" . useOneParamSG) indEigVals
+indEigValPowers = map useOneParamSG indEigVals
+
+eigValsInXmin = map fst eigVecsInXminWithVals
+eigValsInXminConv = map (useOneParamSG . fst) eigVecsInXminWithVals
+
+

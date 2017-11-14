@@ -88,7 +88,7 @@ matDirSum qa@(Matrix a) qb@(Matrix b) = Matrix $ zipWith (++) leftSide rightSide
   topRight = matrixAsList $ zeroMatrix nra ncb
   bottomLeft = matrixAsList $ zeroMatrix nrb nca
   nra = numRow qa
-  nca = numCol qb
+  nca = numCol qa
   nrb = numRow qb
   ncb = numCol qb
 

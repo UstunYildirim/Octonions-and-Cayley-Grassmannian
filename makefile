@@ -1,5 +1,7 @@
 main:
 	ghc -O2 -outputdir aux/ Main.hs
+mainrecomp:
+	ghc -O2 -outputdir aux/ Main.hs -fforce-recomp
 mainThreaded:
 	ghc -threaded -O2 -outputdir aux/ Main.hs
 mainNoOptimization:
