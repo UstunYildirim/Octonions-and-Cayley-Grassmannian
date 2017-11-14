@@ -15,5 +15,7 @@ Email me!
 ### Who do I talk to? ###
 
 Ustun Yildirim
+
 ustunyildirim.com
+
 ustun@mailbox.org
