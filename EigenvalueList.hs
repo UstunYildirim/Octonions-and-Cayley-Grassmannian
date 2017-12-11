@@ -44,16 +44,14 @@ latexTableOfEigValsAndVecs pairs = intercalate "\\\\ \\hline\n" $ map genLine (c
     genLine (val, vecs) = let vecs' = intercalate ", " $ map vecWithTilde vecs in 
       " $" ++ show val ++ "$ & $" ++ vecs' ++ "$ "
 
--- OLD
--- eigVecsInXminWithVals = map (\(n,vec) -> (indEigVals !! n, vec)) . filter test $ zip [0..] allCoordinates
---   where
---     test (n,_) = col n newCoordsImQdCrPr == zeroMatrix 8 1
+eigVecsInXminWithVals = map (\(n,vec) -> (indEigVals !! n, vec)) . filter test $ zip [0..] allCoordinates
+  where
+    test (n,_) = col n newCoordsImQdCrPr == zeroMatrix 8 1
 
 itimes = scalarMult i
 newBasis = [1 + itimes oi, 1 - itimes oi, 
             oj + itimes ok, oj - itimes ok,
             ol + itimes oli, ol - itimes oli,
             olj + itimes olk, olj - itimes olk]
-eigVecsInXminWithVals = map (\(n,vec) -> (indEigVals !! n, allCoordinates !! n)) . filter ((==0) .normSquared . imQuadCrPrOnList . snd) . zip [0..] $ ngenFromBasis 4 newBasis
 
 eigVecsInXmin = map snd eigVecsInXminWithVals
