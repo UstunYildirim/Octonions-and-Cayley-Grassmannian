@@ -1,15 +1,11 @@
 
 import System.IO
 import MatrixCalculus
-import Jacobians
-import SingularTest
+import LieG2Basis
 
-theMat = indMatOnExtAlg (rows [1..7] . jacobianInLocalCoords "0123" $ localizeNewDefEqs "0123") 4
+m = map (latexPrintMatrix . (twiceIdentity *)) g2TildeBasis
+
+m' = map (\(n,mt) -> "$$\nX_{"++show n++ "}="++ mt ++"$$\n\n") $ zip [1..] m
 
 main = do
-  mapM_ putStrLn latexPrintKerJs
-
--- main = do 
---   hSetBuffering stdout NoBuffering
---   sc <- sampleComputation
---   putStrLn $ show sc
+  mapM_ putStrLn m'

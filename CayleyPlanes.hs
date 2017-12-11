@@ -59,6 +59,12 @@ contractPhi x = formComps7 2 (intPr x phiOnList)
 
 metricAndVol x = wdgPrOnComps (contractPhi x) $ wdgPrOnComps (contractPhi x) phiComps
 
+associator :: Octonion -> Octonion -> Octonion -> Octonion
+associator u v w = scalarMult 0.5 $ u * (v * w) - (u * v) * w
+
+associatorOnList :: [Octonion] -> Octonion
+associatorOnList [u,v,w] = associator u v w
+
 -- we want to express triCrProd as alternation
 -- of u(\bar v w).
 
@@ -87,8 +93,8 @@ latexPrintCapPhi = latexPrintFormNum $ formComps8' 4 capPhiOnList
 
 preQuadCrProdOnList = alternate f
   where
-    f [x,u,v,w] = negate $ ((x * conj u) * v) * conj w
-    --f [x,u,v,w] = conj x*triCrProdOnList [u,v,w]
+    --f [x,u,v,w] = negate $ ((x * conj u) * v) * conj w
+    f [x,u,v,w] = - triCrProdOnList [x,u,v] * conj w
 
 quadCrPr x u v w = scalarMult (-0.25) (
   (triCrProd x u v) * conj w

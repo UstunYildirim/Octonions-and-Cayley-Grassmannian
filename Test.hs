@@ -81,5 +81,3 @@ indEigValPowers = map useOneParamSG indEigVals
 
 eigValsInXmin = map fst eigVecsInXminWithVals
 eigValsInXminConv = map (useOneParamSG . fst) eigVecsInXminWithVals
-
-
