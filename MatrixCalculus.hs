@@ -23,6 +23,8 @@ instance (Eq a, Num a) => Num (Matrix a) where
   fromInteger n = Matrix [[fromInteger n]]
   negate = fmap negate
 
+matScalarMult l m = fmap (l *) m
+
 matrixAsList (Matrix ls) = ls
 listAsMatrix ls = Matrix ls
 
