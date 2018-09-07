@@ -57,7 +57,9 @@ phiComps = formComps7 3 phiOnList
 
 contractPhi x = formComps7 2 (intPr x phiOnList)
 
-metricAndVol x = wdgPrOnComps (contractPhi x) $ wdgPrOnComps (contractPhi x) phiComps
+metricAndVol x = wdgPrOnComps contractPhiX $ wdgPrOnComps contractPhiX phiComps
+  where
+    contractPhiX = contractPhi x
 
 associator :: Octonion -> Octonion -> Octonion -> Octonion
 associator u v w = scalarMult 0.5 $ u * (v * w) - (u * v) * w
@@ -97,7 +99,7 @@ preQuadCrProdOnList = alternate f
     f [x,u,v,w] = - triCrProdOnList [x,u,v] * conj w
 
 quadCrPr x u v w = scalarMult (-0.25) (
-  (triCrProd x u v) * conj w
+   (triCrProd x u v) * conj w
   -(triCrProd w x u) * conj v
   +(triCrProd v w x) * conj u
   -(triCrProd u v w) * conj x)

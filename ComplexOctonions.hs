@@ -5,7 +5,6 @@ import ComplexQuarternions hiding (coordinateWiseOperation, sumCoordinates, mult
 import qualified ComplexQuarternions as CQ
 import qualified Data.List as List
 
-ii  :: Octonion 
 oi  :: Octonion 
 oj  :: Octonion 
 ok  :: Octonion 
@@ -13,7 +12,6 @@ ol  :: Octonion
 oli :: Octonion 
 olj :: Octonion 
 olk :: Octonion 
-ii  = scalarMult i 1
 oi  = Octonion(qi,0)
 oj  = Octonion(qj,0)
 ok  = Octonion(qk,0)
@@ -27,6 +25,7 @@ ioctGens    :: [Octonion]
 imagOctGens :: [Octonion] 
 octGens     = [1,oi,oj,ok,ol,oli,olj,olk]
 ioctGens    = map (scalarMult i) octGens
+[ii,ioi,ioj,iok,iol,ioli,iolj,iolk] = ioctGens
 imagOctGens = tail octGens
 
 data Octonion = Octonion {  octonion :: (Quarternion,Quarternion)
